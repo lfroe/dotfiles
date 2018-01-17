@@ -35,25 +35,41 @@ array=(
 rmq_base_dir='/usr/local/sbin'
 tomcat_base_dir='/Library/Tomcat/bin'
 args=("$@")
+restart=false
+for var in "$@"
+do
+  case $var in
+    --i|--info)
+    for service in "${array[@]}"
+    do
+      echo $service
+    done
+    shift
+    ;;
+    --r|--restart)
+    restart=true
+  esac  
+done
+
 function new_tab() {
   TAB_NAME=$1
   COMMAND=$2
   echo $TAB_NAME
   osascript \
-   -e "   	tell application \"iTerm\"" \
-   -e " 		activate" \
-   -e " 		tell current window" \
-   -e " 			create tab with default profile" \
-   -e " 		end tell" \
-   -e " 		tell current tab of current window" \
+   -e "     tell application \"iTerm\"" \
+   -e "     activate" \
+   -e "     tell current window" \
+   -e "       create tab with default profile" \
+   -e "     end tell" \
+   -e "     tell current tab of current window" \
    -e "       select"\
-   -e " 			set _session to current session" \
-   -e " 			tell _session" \
+   -e "       set _session to current session" \
+   -e "       tell _session" \
    -e "         write text \"$COMMAND \"" \
    -e "         set name to \"$TAB_NAME\"" \
-   -e " 			end tell" \
-   -e " 		end tell" \
-   -e " 	end tell"
+   -e "       end tell" \
+   -e "     end tell" \
+   -e "   end tell"
 }
 
 for (( i=0; i < $#; ++i ))
@@ -67,25 +83,24 @@ do
     cdto="/Users/lukas/Documents/EXT/${VALUE}/"
     if [[ "$KEY" == "mongo" ]] 
     then
-      echo mongo
       cmd="sudo mongod --config /etc/mongod.conf"
-      $cmd
+      new_tab "mongo" "$cmd"
       elif [[ "$KEY" == "rmq" ]] 
       then
-        echo here
         cmd="$rmq_base_dir/rabbitmq-server"
-        new_tab "RABBITMQ" "$cmd"
+        new_tab "rabbitmq" "$cmd"
       elif [[ "$KEY" == "tomcat" ]] 
       then
-        echo here
         cmd="$tomcat_base_dir/startup.sh"
-        $cmd
+        new_tab "tomcat" "$cmd"
       else
-        echo $KEY
-        for proc in $(lsof +D ${cdto} | awk 'NR!=1 {print $2}') 
-        do
-          kill $proc
-        done
+        if [[ "$restart" == true ]] 
+        then
+          for proc in $(lsof +D ${cdto} | awk 'NR!=1 {print $2}') 
+          do
+            kill $proc
+          done
+        fi
         cmd="./gradlew bootRun"
         new_tab "${VALUE}" "cd $cdto;$cmd;"
       fi
