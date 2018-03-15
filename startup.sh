@@ -50,7 +50,6 @@ restart=false
 function new_tab() {
   TAB_NAME=$1
   COMMAND=$2
-  echo "TAB NAME IS $TAB_NAME"
   osascript \
    -e "     tell application \"iTerm\"" \
    -e "     activate" \
@@ -91,8 +90,7 @@ do
     --i|--info)
     for service in "${array[@]}"
     do
-      echo "LISTING SERVICE ${service}"
-      #echo $service
+      echo $service
     done
     shift
     ;;
