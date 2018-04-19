@@ -1,11 +1,11 @@
 #!/bin/bash
-array=('core::extBackend'
+array=('core::ext'
     'auth::auth-service'
     'fmgr::form-manager-service'
     'gate::api-gateway'
     'vmgr::vendormanagement'
     'wflw::workflowengine'
-    'todo::todoservice'
+    'todo::todo-service'
     'ngen::numbergenerator'
     'dcmt::documentservice'
     'eprc::eprocservice'
@@ -14,13 +14,13 @@ array=('core::extBackend'
     'rept::reportingservice'
     'ctmn::catman-service'
     'clrs::clearingservice'
-    'c::extBackend'
+    'c::ext'
     'a::auth-service'
     'f::form-manager-service'
     'g::api-gateway'
     'b::vendormanagement'
     'w::workflowengine'
-    't::todoservice'
+    't::todo-service'
     'n::numbergenerator'
     'd::documentservice'
     'e::eprocservice'
@@ -38,12 +38,13 @@ default_services=('core::extBackend'
     'wflw::workflowengine'
     'todo::todoservice'
     'dcmt::documentservice')
-setup=('rmq' 'mongo' 'tomcat')
+setup=('rmq' 'mongo' 'tomcat' 'mamp')
 
 #base directories
 rmq_base_dir='/usr/local/sbin'
 tomcat_base_dir='/Library/Tomcat/bin'
-base_dir='/Users/lukas/Documents/EXT'
+base_dir='/Users/lukas/Documents/EXT/0_complete'
+mamp_base_dir='/Applications/MAMP/bin'
 args=("$@")
 restart=false
 
@@ -75,12 +76,18 @@ function start_setup_service() {
     new_tab "mongo" "$cmd"
   elif [[ "$SERVICE_NAME" == "rmq" ]]
   then
+    echo 'starting rabbitmq...'
     cmd="$rmq_base_dir/rabbitmq-server"
     new_tab "rabbitmq" "$cmd"
   elif [[ "$SERVICE_NAME" == "tomcat" ]]
   then
+    echo 'starting tomcat...'
     cmd="$tomcat_base_dir/startup.sh"
     "$cmd"
+  elif [[ "$SERVICE_NAME" == "mamp" ]]
+  then
+    cmd="$mamp_base_dir/start.sh"
+    new_tab "MAMP" "$cmd"
   fi
 }
 
