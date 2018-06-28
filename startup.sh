@@ -29,16 +29,19 @@ array=('core::ext'
     'r::reportingservice'
     'm::catman-service'
     's::clearingservice'
+    'co::codetabservice'
     'mongo::mongo'
     'rmq::rmq'
-    'tomcat::tomcat')
+    'tomcat::tomcat'
+    'elastic::elastic'
+)
 default_services=('core::extBackend'
     'auth::auth-service'
     'fmgr::form-manager-service'
     'wflw::workflowengine'
     'todo::todoservice'
     'dcmt::documentservice')
-setup=('rmq' 'mongo' 'tomcat' 'mamp')
+setup=('rmq' 'mongo' 'tomcat' 'mamp', 'elastic')
 
 #base directories
 rmq_base_dir='/usr/local/sbin'
@@ -88,6 +91,10 @@ function start_setup_service() {
   then
     cmd="$mamp_base_dir/start.sh"
     new_tab "MAMP" "$cmd"
+  elif [[ "$SERVICE_NAME" == "elastic" ]]
+  then
+    cmd="elastic"
+    new_tab "elastic" "$cmd"
   fi
 }
 
