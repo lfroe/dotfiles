@@ -14,7 +14,7 @@ array=('core::ext'
     'rept::reportingservice'
     'ctmn::catman-service'
     'clrs::clearingservice'
-    'c::ext'
+    'c::extBackend'
     'a::auth-service'
     'f::form-manager-service'
     'g::api-gateway'
@@ -29,25 +29,25 @@ array=('core::ext'
     'r::reportingservice'
     'm::catman-service'
     's::clearingservice'
-    'co::codetabservice'
+    'sr::searchservice'
     'mongo::mongo'
     'rmq::rmq'
-    'tomcat::tomcat'
-    'elastic::elastic'
-)
+    'elastic:elastic'
+    'tomcat::tomcat')
 default_services=('core::extBackend'
     'auth::auth-service'
     'fmgr::form-manager-service'
     'wflw::workflowengine'
     'todo::todoservice'
     'dcmt::documentservice')
-setup=('rmq' 'mongo' 'tomcat' 'mamp', 'elastic')
+setup=('rmq' 'mongo' 'tomcat' 'elastic' 'cerebro' 'adminmongo')
 
 #base directories
 rmq_base_dir='/usr/local/sbin'
 tomcat_base_dir='/Library/Tomcat/bin'
-base_dir='/Users/lukas/Documents/EXT/0_complete'
+base_dir='/Users/lukas/Documents/EXT'
 mamp_base_dir='/Applications/MAMP/bin'
+admin_mongo_base_dir="/Users/lukas/bin/adminMongo"
 args=("$@")
 restart=false
 
@@ -94,7 +94,15 @@ function start_setup_service() {
   elif [[ "$SERVICE_NAME" == "elastic" ]]
   then
     cmd="elastic"
-    new_tab "elastic" "$cmd"
+    new_tab "elasticsearch" "$cmd"
+  elif [[ "$SERVICE_NAME" == "cerebro" ]]
+  then
+    cmd="cerebro"
+    new_tab "cerebro" "$cmd"
+  elif [[ "$SERVICE_NAME" == "adminmongo" ]]
+  then
+    cmd="cd $admin_mongo_base_dir && npm start"
+    new_tab "adminmongo" "$cmd"
   fi
 }
 
